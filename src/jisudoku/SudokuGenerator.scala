@@ -3,12 +3,14 @@ package jisudoku
 import util.Random
 class SudokuGenerator {
 
-  /*Represents a row of numbers */
-  type Row = List[Int]
+  /* Represents a row of numbers 
+   * */
+  type Row = List[Char]
   
   /**
    *  Block, could be either a 3x3 or 9x9 matrix
-   *  */
+   *  
+   **/
   type Block = List[Row]
   
   /**
@@ -18,7 +20,7 @@ class SudokuGenerator {
   
   /* A random arrangement of numbers from 1 to 9. We use this randomly generated
    * order a basis to create the grid */
-  val numbers = Random.shuffle(List(1,2,3,4,5,6,7,8,9))
+  val numbers = Random.shuffle(List('1','2','3','4','5','6','7','8','9'))
   
   /** 
    * An initial 3x3 Cell or Block. We'll build our sudoku grid based on this grid
@@ -171,6 +173,13 @@ class SudokuGenerator {
 
 }
 
+object SudokuDifficulty extends Enumeration {
+  type SudokuDifficulty = Value
+  val Easy,Medium,Hard = Value
+}
+
 object SudokuGenerator {
   def create = new SudokuGenerator ().generateGrid
+  
+  /* now we need to convert this into a puzzle */
 }
