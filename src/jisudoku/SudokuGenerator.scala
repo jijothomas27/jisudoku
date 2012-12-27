@@ -1,6 +1,13 @@
 package jisudoku
 
 import util.Random
+
+object SudokuDifficulty extends Enumeration {
+	  val Easy = Value
+	  val Medium = Value
+	  val Hard = Value
+ }
+
 class SudokuGenerator {
 
   /* Represents a row of numbers 
@@ -173,13 +180,64 @@ class SudokuGenerator {
 
 }
 
-object SudokuDifficulty extends Enumeration {
-  type SudokuDifficulty = Value
-  val Easy,Medium,Hard = Value
-}
+
 
 object SudokuGenerator {
   def create = new SudokuGenerator ().generateGrid
+
   
+  
+  val easyMask: List[List[Char]] = List(
+	List(' ',' ',' ','x','x',' ','x',' ','x'),
+	List(' ',' ',' ',' ','x','x',' ',' ',' '),
+	List('x','x',' ',' ',' ','x',' ','x',' '),
+	List(' ',' ',' ','x',' ','x',' ','x',' '),
+	List(' ',' ','x','x',' ','x',' ','x',' '),
+	List(' ','x',' ','x',' ','x',' ',' ',' '),
+	List(' ','x',' ','x',' ',' ',' ','x','x'),
+	List(' ',' ',' ','x','x',' ',' ',' ',' '),
+	List('x',' ','x',' ','x','x',' ',' ',' '))
+	
+  val mediumMask = List(
+	List(' ','x','x',' ','x',' ',' ',' ','x'),
+	List(' ',' ','x',' ',' ',' ',' ',' ','x'),
+	List(' ',' ','x','x',' ',' ',' ','x','x'),
+	List(' ','x','x','x','x',' ',' ',' ',' '),
+	List('x',' ',' ',' ','x',' ',' ',' ','x'),
+	List(' ',' ',' ',' ','x','x','x','x',' '),
+	List('x','x',' ',' ',' ','x','x',' ',' '),
+	List('x',' ',' ',' ',' ',' ','x',' ',' '),
+	List('x',' ',' ',' ','x',' ','x','x',' '))
+  val hardMask = List(
+	List(' ',' ','x','x',' ',' ',' ','x',' '),
+	List('x',' ',' ','x',' ',' ',' ','x','x'),
+	List(' ','x',' ','x','x',' ','x',' ',' '),
+	List('x',' ',' ',' ',' ','x',' ','x',' '),
+	List(' ',' ',' ',' ',' ',' ',' ',' ',' '),
+	List(' ','x',' ','x',' ',' ',' ',' ','x'),
+	List(' ',' ','x',' ','x','x',' ','x',' '),
+	List('x','x',' ',' ',' ','x',' ',' ','x'),
+	List(' ','x',' ',' ',' ','x','x',' ',' '))
+	
+	private def maskElement(actual:Char)(mask:Char): Char = 
+	  if(mask == 'x') actual
+	  else mask
+	  
+	private def maskOneRow (actual:List[Char],mask:List[Char]): List[Char] = 
+	    (actual zip mask) map (t => maskElement(t._1)( t._2))
+	
+	private def convertToPuzzle(actual:List[List[Char]])(mask:List[List[Char]]): List[List[Char]] = 
+		(actual zip mask) map (t => maskOneRow(t._1, t._2))
+	
   /* now we need to convert this into a puzzle */
+	def createPuzzle(level:Int): (List[List[Char]],List[List[Char]]) = {
+	    val sudoku : List[List[Char]] = create
+	    val mask = if (level ==0) easyMask
+	    else if (level == 1) mediumMask
+	    else hardMask
+	    
+	    val puzzle = convertToPuzzle(sudoku)(mask)
+	    
+	    return (sudoku,puzzle)
+	}
 }
